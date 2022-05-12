@@ -1,5 +1,5 @@
 {
-  "name": "electron-vue-vite",
+  "name": "touchboard-factfinder-vue-vite",
   "version": "1.0.0",
   "main": "dist/main/index.cjs",
   "author": "草鞋没号 <308487730@qq.com>",
@@ -18,6 +18,7 @@
   "devDependencies": {
     "@playwright/test": "^1.21.1",
     "@vitejs/plugin-vue": "^2.3.2",
+    "autoprefixer": "^10.4.7",
     "electron": "18.2.0",
     "electron-builder": "^23.0.3",
     "nano-staged": "^0.8.0",
@@ -39,5 +40,11 @@
     "vite",
     "vue3",
     "vue"
-  ]
+  ],
+  "dependencies": {
+    "axios": "^0.27.2",
+    "interactjs": "^1.10.11",
+    "pinia": "^2.0.14",
+    "vue-router": "^4.0.15"
+  }
 }
