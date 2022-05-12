@@ -20,13 +20,13 @@ for (var i = 0; i < store.savedCards.length; i++) {
   content.value += `- ${store.savedCards[i].author} \r\n`;
 }
 
-function handleSave(content) {
-  console.log("send: " + content);
-  const reply = ipcRenderer.send("create-a-file", content);
+async function handleSave(content) {
+  // console.log("send: " + content);
+  const reply = await ipcRenderer.invoke("create-a-file", content);
   console.log("reply: " + reply);
-  ipcRenderer.on("eventFromCreateFile", (event, arg) => {
-    console.log("response: " + arg);
-  });
+  // ipcRenderer.on("eventFromCreateFile", (event, arg) => {
+  //   console.log("response: " + arg);
+  // });
 }
 </script>
 

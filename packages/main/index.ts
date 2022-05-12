@@ -76,27 +76,21 @@ app.on("activate", () => {
 });
 
 //dialog module
-async function writeIt(content: any) {
-  try {
-    const { canceled, filePath } = await dialog.showSaveDialog({
-      defaultPath: "~/quotes55.txt",
-    });
-
-    if (!canceled && filePath) {
-      fs.writeFile(filePath, content, (err1: any) => {
-        // file saved or err
-        return err1;
-      });
-    }
-
-    return filePath;
-  } catch (err2) {
-    return err2;
-  }
-}
+async function writeIt(content: any) {}
 
 //write a file based on content given
-ipcMain.on("create-a-file", (event, content: any) => {
-  const result = writeIt(content);
-  event.reply("eventFromCreateFile", result);
+ipcMain.handle("create-a-file", async (event, content: any) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    defaultPath: "~/quotes55.txt",
+  });
+
+  if (!canceled && filePath) {
+    fs.writeFile(filePath, content, (err1: any) => {
+      // file saved or err
+      console.log(err1);
+    });
+  }
+  console.log(filePath);
+  console.log("made it!");
+  return filePath;
 });
