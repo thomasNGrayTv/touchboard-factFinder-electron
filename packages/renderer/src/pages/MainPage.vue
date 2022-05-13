@@ -4,24 +4,33 @@ import { ipcRenderer } from "electron";
 import useAxiosHandler from "../composables/useAxiosHandler";
 import CardStack from "../components/CardStack.vue";
 import { onMounted } from "vue";
+import quotesLocalData from "../backups/quotes.json";
 
 const store = mainStore();
 
+function addNeededFields(getCardsQuotes) {
+  let stringifyData = JSON.stringify(getCardsQuotes);
+  let copyData = JSON.parse(stringifyData);
+
+  for (let i = 0; i < copyData.length; i++) {
+    if (i === copyData.length - 1) {
+      copyData[i].showCard = true;
+    } else {
+      copyData[i].showCard = false;
+    }
+    copyData[i].index = i;
+    copyData[i].inTrue = false;
+    copyData[i].inFalse = false;
+  }
+  return copyData;
+}
+
 async function getQuotes() {
-  store.cards = [];
   try {
     const getCardsQuotes = await useAxiosHandler().get("/quotes");
-    for (let i = 0; i < getCardsQuotes.data.results.length; i++) {
-      if (i === getCardsQuotes.data.results.length - 1) {
-        getCardsQuotes.data.results[i].showCard = true;
-      } else {
-        getCardsQuotes.data.results[i].showCard = false;
-      }
-      getCardsQuotes.data.results[i].index = i;
-      getCardsQuotes.data.results[i].inTrue = false;
-      getCardsQuotes.data.results[i].inFalse = false;
-    }
-    store.setCards(getCardsQuotes.data.results);
+    const results = addNeededFields(getCardsQuotes.data.results);
+
+    store.setCards(results);
   } catch (err) {
     console.log("Error from API: " + err);
   }
@@ -45,8 +54,30 @@ async function handleSave() {
   console.log("reply: " + reply);
 }
 
+function checkInternetBeforeLoad() {
+  store.cards = [];
+  if (!window.navigator.onLine) {
+    // const stringIt = JSON.stringify(quotesLocalData.results);
+    // const copyData = JSON.parse(stringIt)
+    //some notification showing internet is down
+    // alert("no internet connection - pulling in local data instead.");
+    const results = addNeededFields(quotesLocalData.results);
+    store.setCards(results);
+  } else {
+    getQuotes();
+  }
+}
+
 onMounted(() => {
-  getQuotes();
+  console.log("Initially " + (window.navigator.onLine ? "on" : "off") + "line");
+
+  checkInternetBeforeLoad();
+
+  document
+    .getElementById("statusCheck")
+    .addEventListener("click", () =>
+      alert("internet is " + (window.navigator.onLine ? "on" : "off") + "line")
+    );
 });
 </script>
 
@@ -57,7 +88,8 @@ onMounted(() => {
   <button v-if="store.cards.length" @click="handleSave()" class="btn-primary">
     Save to File
   </button>
-  <button @click="getQuotes()" class="btn-primary">Reset</button>
+  <button id="statusCheck" class="btn-primary">Status Check</button>
+  <button @click="checkInternetBeforeLoad()" class="btn-primary">Reset</button>
 
   <CardStack></CardStack>
 </template>
