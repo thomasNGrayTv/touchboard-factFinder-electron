@@ -157,13 +157,15 @@ window.dragMoveListener = dragMoveListener;
   padding: 1em 2em;
   color: white;
   border-radius: 10px;
-  transform: scale(0);
+  opacity: 0;
+  z-index: -1;
   transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 .card.showCard,
 .card.placedCard {
-  transform: scale(1);
+  opacity: 1;
+  z-index: 20;
 }
 
 .card.bg-green-200 {
