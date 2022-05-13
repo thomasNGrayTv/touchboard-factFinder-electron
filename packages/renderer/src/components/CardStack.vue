@@ -9,6 +9,16 @@ const store = mainStore();
 try {
   if (store.cards.length === 0) {
     const getCardsQuotes = await useAxiosHandler().get("/quotes");
+    for (let i = 0; i < getCardsQuotes.data.results.length; i++) {
+      if (i === getCardsQuotes.data.results.length - 1) {
+        getCardsQuotes.data.results[i].showCard = true;
+      } else {
+        getCardsQuotes.data.results[i].showCard = false;
+      }
+      getCardsQuotes.data.results[i].index = i;
+      getCardsQuotes.data.results[i].inTrue = false;
+      getCardsQuotes.data.results[i].inFalse = false;
+    }
     store.setCards(getCardsQuotes.data.results);
   }
 } catch (err) {
@@ -18,25 +28,30 @@ try {
 
 <template>
   <div class="cards">
-    <div class="leftCustom1 widthCustom1 hCustom dropzone saveDropZone">
+    <div class="zone">
       <h2 class="text-4xl text-center">True</h2>
+      <div class="leftCustom1 widthCustom1 hCustom dropzone saveDropZone"></div>
     </div>
-    <div class="cardContainer">
+    <div class="cardContainer dropzone">
       <Card
         v-for="(card, index) in store.cards"
         :key="card"
         :card="card"
         :data-card="JSON.stringify(card)"
         :style="{
-          top: index - 0.5 + 'em',
-          zIndex: 22 - index,
+          top: '2em',
+          left: '-5px',
           position: 'absolute',
         }"
+        :class="{ showCard: card.showCard }"
         :id="'card' + index"
       ></Card>
     </div>
-    <div class="leftCustom2 widthCustom2 hCustom dropzone trashDropZone">
+    <div class="zone">
       <h2 class="text-4xl text-center">False</h2>
+      <div
+        class="leftCustom2 widthCustom2 hCustom dropzone trashDropZone"
+      ></div>
     </div>
   </div>
 </template>
@@ -46,37 +61,37 @@ try {
   top: 2em;
   left: 1em;
   width: 100%;
+  min-width: 100em;
   height: 100%;
   display: flex;
+  justify-content: space-around;
 }
 
 .cardContainer {
   position: relative;
-  width: 20em;
+  width: 30em;
   height: 100%;
 }
 
-.dropzone {
+.dropzone:not(.cardContainer) {
   margin: 1em;
-  border: 2px dashed black;
   text-align: center;
 }
 
-.dropzone.bg-green-200 {
-  background-color: rgb(39, 236, 39);
-}
-
-.dropzone.bg-red-300 {
-  background-color: red;
+h2 {
+  background-color: bisque;
+  padding: 1em 2em;
+  text-align: center;
 }
 
 .widthCustom1 {
-  width: 19em;
+  min-width: 29em;
 }
 .widthCustom2 {
-  width: 19em;
+  min-width: 29em;
 }
 .hCustom {
-  height: 30em;
+  height: 100%;
+  min-height: 30em;
 }
 </style>

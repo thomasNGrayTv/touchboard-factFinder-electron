@@ -3,6 +3,7 @@ import interact from "interactjs";
 import { mainStore } from "../stores/mainStore";
 
 const store = mainStore();
+let dynamicTargets = [];
 
 defineProps({
   card: {
@@ -22,10 +23,19 @@ interact(".card")
     inertia: true,
     // keep the element within the area of it's parent
     modifiers: [
-      interact.modifiers.restrictRect({
-        endOnly: true,
-      }),
+      // interact.modifiers.snap({
+      //   targets: dynamicTargets,
+      //   relativePoints: [
+      //     {
+      //       x: 0,
+      //       y: 0,
+      //     },
+      //   ],
+      // }),
     ],
+
+    onstart: function (event) {},
+
     // enable autoScroll
     autoScroll: true,
 
@@ -35,6 +45,7 @@ interact(".card")
 
       // call this function on every dragend event
       end(event) {
+        dynamicTargets.length = 0;
         // var textEl = event.target.querySelector("p");
         // textEl &&
         //   (textEl.textContent =
@@ -57,14 +68,9 @@ interact(".dropzone").dropzone({
   },
   ondragenter: function (event) {
     var draggableElement = event.relatedTarget;
-    var dropzoneElement = event.target;
 
     // feedback the possibility of a drop
-    if (dropzoneElement.classList.contains("saveDropZone")) {
-      dropzoneElement.classList.add("bg-green-200");
-    } else {
-      dropzoneElement.classList.add("bg-red-300");
-    }
+
     draggableElement.classList.add("can-drop");
   },
   ondragleave: function (event) {
@@ -79,14 +85,25 @@ interact(".dropzone").dropzone({
     event.relatedTarget.classList.remove("can-drop");
   },
   ondrop: function (event) {
+    event.stopImmediatePropagation();
     var card = JSON.parse(event.relatedTarget.getAttribute("data-card"));
 
-    if (event.target.classList.contains("saveDropZone")) {
+    if (
+      event.target.classList.contains("saveDropZone") &&
+      !event.relatedTarget.classList.contains("bg-green-200")
+    ) {
       store.addToSavedCards(card);
-      event.target.classList.remove("bg-green-200");
-    } else {
-      store.removeFromCards(card._id);
-      event.target.classList.remove("bg-red-300");
+      event.relatedTarget.classList.add("bg-green-200");
+    } else if (event.target.classList.contains("cardContainer")) {
+      store.addToCards(card);
+      event.relatedTarget.classList.remove("bg-green-200");
+      event.relatedTarget.classList.remove("bg-red-300");
+    } else if (
+      event.target.classList.contains("trashDropZone") &&
+      !event.relatedTarget.classList.contains("bg-red-300")
+    ) {
+      store.removeFromCards(card);
+      event.relatedTarget.classList.add("bg-red-300");
     }
   },
   ondropdeactivate: function (event) {
@@ -130,13 +147,30 @@ window.dragMoveListener = dragMoveListener;
 
 <style scoped>
 .card {
-  width: 19em;
-  height: 25em;
-  box-sizing: border-box;
+  min-width: 25em;
   touch-action: none;
   background: blue;
-  border: 2px solid;
-  padding: 2em;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  padding: 1em 2em;
   color: white;
+  border-radius: 10px;
+  transform: scale(0);
+  transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.card.showCard,
+.card.placedCard {
+  transform: scale(1);
+}
+
+.card.bg-green-200 {
+  background-color: rgb(43 200 43);
+}
+
+.card.bg-red-300 {
+  background-color: rgb(213, 8, 8);
 }
 </style>

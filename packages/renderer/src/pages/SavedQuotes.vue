@@ -41,7 +41,7 @@ async function handleSave(content) {
   >
     Save to File
   </button>
-  <div class="flex flex-wrap w-full h-full ml-4">
+  <div class="trueContain flex flex-wrap w-full h-full ml-4">
     <Card
       v-for="(card, index) in store.savedCards"
       :key="card"
@@ -52,4 +52,12 @@ async function handleSave(content) {
   </div>
 </template>
 
-<style></style>
+<style>
+.trueContain {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  margin-left: 1em;
+}
+</style>

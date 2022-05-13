@@ -20,7 +20,7 @@ let win: BrowserWindow | null = null;
 async function createWindow() {
   win = new BrowserWindow({
     title: "True/False Page",
-    width: 1400,
+    width: 1680,
     height: 900,
     webPreferences: {
       preload: join(__dirname, "../preload/index.cjs"),
