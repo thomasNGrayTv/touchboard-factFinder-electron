@@ -20,20 +20,25 @@ export const mainStore = defineStore({
     },
     addToSavedCards(card) {
       const index = card.index;
-      const found = this.cards.find(
-        (c) => c.index !== index && c.showCard === false
-      );
-
-      if (found !== undefined && this.cards[found.index] !== undefined) {
-        this.cards[found.index].showCard = true;
-      }
-
       this.cards[index].inTrue = true;
 
-      if (!this.savedCards.some((c) => c._id == card._id)) {
-        this.savedCards.push(card);
-        // this.cards = this.cards.filter((c) => c._id !== card._id);
+      const alreadyThere = this.cards.some(
+        (c) => c.showCard === true && c.inFalse === false && c.inTrue === false
+      );
+      if (!alreadyThere) {
+        const found = this.cards.find(
+          (c) => c.index !== index && c.showCard === false
+        );
+
+        if (found !== undefined && this.cards[found.index] !== undefined) {
+          this.cards[found.index].showCard = true;
+        }
       }
+
+      // if (!this.savedCards.some((c) => c._id == card._id)) {
+      //   this.savedCards.push(card);
+      //   // this.cards = this.cards.filter((c) => c._id !== card._id);
+      // }
     },
     addToCards(card) {
       const index = card.index;
@@ -54,18 +59,22 @@ export const mainStore = defineStore({
     },
     removeFromCards(card) {
       const index = card.index;
-      const found = this.cards.find(
-        (c) => c.index !== index && c.showCard === false
-      );
-      if (found !== undefined) {
-        this.cards[found.index].showCard = true;
-      }
-
       this.cards[index].inFalse = true;
-
-      if (!this.falseCards.some((c) => c._id == card._id)) {
-        this.falseCards.push(card);
+      const alreadyThere = this.cards.some(
+        (c) => c.showCard === true && c.inFalse === false && c.inTrue === false
+      );
+      if (!alreadyThere) {
+        const found = this.cards.find(
+          (c) => c.index !== index && c.showCard === false
+        );
+        if (found !== undefined) {
+          this.cards[found.index].showCard = true;
+        }
       }
+
+      // if (!this.falseCards.some((c) => c._id == card._id)) {
+      //   this.falseCards.push(card);
+      // }
       // this.cards = this.cards.filter((c) => c._id !== card.id);
     },
   },

@@ -93,6 +93,7 @@ interact(".dropzone").dropzone({
       !event.relatedTarget.classList.contains("bg-green-200")
     ) {
       store.addToSavedCards(card);
+      event.relatedTarget.classList.remove("bg-red-300");
       event.relatedTarget.classList.add("bg-green-200");
     } else if (event.target.classList.contains("cardContainer")) {
       store.addToCards(card);
@@ -103,6 +104,7 @@ interact(".dropzone").dropzone({
       !event.relatedTarget.classList.contains("bg-red-300")
     ) {
       store.removeFromCards(card);
+      event.relatedTarget.classList.remove("bg-green-200");
       event.relatedTarget.classList.add("bg-red-300");
     }
   },
