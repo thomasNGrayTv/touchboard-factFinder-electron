@@ -75,13 +75,10 @@ app.on("activate", () => {
   }
 });
 
-//dialog module
-async function writeIt(content: any) {}
-
 //write a file based on content given
 ipcMain.handle("create-a-file", async (event, content: any) => {
   const { canceled, filePath } = await dialog.showSaveDialog({
-    defaultPath: "~/quotes55.txt",
+    defaultPath: "~/true-false-data.txt",
   });
 
   if (!canceled && filePath) {

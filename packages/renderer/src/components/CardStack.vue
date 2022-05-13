@@ -1,29 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
 import Card from "./Card.vue";
-import useAxiosHandler from "../composables/useAxiosHandler";
+
 import { mainStore } from "../stores/mainStore";
 
 const store = mainStore();
-
-try {
-  if (store.cards.length === 0) {
-    const getCardsQuotes = await useAxiosHandler().get("/quotes");
-    for (let i = 0; i < getCardsQuotes.data.results.length; i++) {
-      if (i === getCardsQuotes.data.results.length - 1) {
-        getCardsQuotes.data.results[i].showCard = true;
-      } else {
-        getCardsQuotes.data.results[i].showCard = false;
-      }
-      getCardsQuotes.data.results[i].index = i;
-      getCardsQuotes.data.results[i].inTrue = false;
-      getCardsQuotes.data.results[i].inFalse = false;
-    }
-    store.setCards(getCardsQuotes.data.results);
-  }
-} catch (err) {
-  console.log(err);
-}
 </script>
 
 <template>
@@ -92,6 +72,6 @@ h2 {
 }
 .hCustom {
   height: 100%;
-  min-height: 30em;
+  min-height: 100em;
 }
 </style>

@@ -1,8 +1,31 @@
 <script setup>
 import { mainStore } from "../stores/mainStore";
 import { ipcRenderer } from "electron";
+import useAxiosHandler from "../composables/useAxiosHandler";
 import CardStack from "../components/CardStack.vue";
+import { onMounted } from "vue";
+
 const store = mainStore();
+
+async function getQuotes() {
+  store.cards = [];
+  try {
+    const getCardsQuotes = await useAxiosHandler().get("/quotes");
+    for (let i = 0; i < getCardsQuotes.data.results.length; i++) {
+      if (i === getCardsQuotes.data.results.length - 1) {
+        getCardsQuotes.data.results[i].showCard = true;
+      } else {
+        getCardsQuotes.data.results[i].showCard = false;
+      }
+      getCardsQuotes.data.results[i].index = i;
+      getCardsQuotes.data.results[i].inTrue = false;
+      getCardsQuotes.data.results[i].inFalse = false;
+    }
+    store.setCards(getCardsQuotes.data.results);
+  } catch (err) {
+    console.log("Error from API: " + err);
+  }
+}
 
 async function handleSave() {
   let content = "";
@@ -20,40 +43,27 @@ async function handleSave() {
   // console.log("send: " + content);
   const reply = await ipcRenderer.invoke("create-a-file", content);
   console.log("reply: " + reply);
-  // ipcRenderer.on("eventFromCreateFile", (event, arg) => {
-  //   console.log("response: " + arg);
-  // });
 }
+
+onMounted(() => {
+  getQuotes();
+});
 </script>
 
 <template>
   <!-- <router-link class="underline ml-2" :to="{ name: 'saved-quotes' }"
     >True Quotes</router-link
   > -->
-  <button
-    v-if="store.cards.length"
-    @click="handleSave()"
-    class="btn-primary block m-2"
-  >
+  <button v-if="store.cards.length" @click="handleSave()" class="btn-primary">
     Save to File
   </button>
-  <Suspense>
-    <template #default>
-      <CardStack></CardStack>
-    </template>
-    <template #fallback>
-      <div class="loaderContainer relative flex w-24 h-7">
-        Loading Cards....
-      </div>
-    </template>
-  </Suspense>
+  <button @click="getQuotes()" class="btn-primary">Reset</button>
+
+  <CardStack></CardStack>
 </template>
 
 <style>
-.loaderContainer {
-  top: 2em;
-  left: 1em;
-  width: 98%;
-  height: 100%;
+button {
+  margin: 1em;
 }
 </style>
