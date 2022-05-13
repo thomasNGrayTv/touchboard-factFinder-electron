@@ -7,6 +7,5 @@
 <style>
 body {
   box-sizing: border-box;
-  color: blue;
 }
 </style>

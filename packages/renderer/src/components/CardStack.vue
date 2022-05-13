@@ -17,28 +17,26 @@ try {
 </script>
 
 <template>
-  <div class="relative flex cards">
-    <Card
-      v-for="(card, index) in store.cards"
-      :key="card"
-      :card="card"
-      :data-card="JSON.stringify(card)"
-      :style="{
-        top: index - 0.5 + 'em',
-        zIndex: 22 - index,
-        position: 'absolute',
-      }"
-      :id="'card' + index"
-    ></Card>
-    <div
-      class="absolute m-4 border-2 border-dashed leftCustom1 widthCustom1 hCustom dropzone saveDropZone"
-    >
-      <h2 class="text-4xl text-center">Save</h2>
+  <div class="cards">
+    <div class="leftCustom1 widthCustom1 hCustom dropzone saveDropZone">
+      <h2 class="text-4xl text-center">True</h2>
     </div>
-    <div
-      class="absolute m-4 border-2 border-dashed leftCustom2 widthCustom2 hCustom dropzone trashDropZone"
-    >
-      <h2 class="text-4xl text-center">Trash</h2>
+    <div class="cardContainer">
+      <Card
+        v-for="(card, index) in store.cards"
+        :key="card"
+        :card="card"
+        :data-card="JSON.stringify(card)"
+        :style="{
+          top: index - 0.5 + 'em',
+          zIndex: 22 - index,
+          position: 'absolute',
+        }"
+        :id="'card' + index"
+      ></Card>
+    </div>
+    <div class="leftCustom2 widthCustom2 hCustom dropzone trashDropZone">
+      <h2 class="text-4xl text-center">False</h2>
     </div>
   </div>
 </template>
@@ -49,14 +47,29 @@ try {
   left: 1em;
   width: 100%;
   height: 100%;
+  display: flex;
 }
 
-.leftCustom1 {
-  left: 20em;
+.cardContainer {
+  position: relative;
+  width: 20em;
+  height: 100%;
 }
-.leftCustom2 {
-  left: 40em;
+
+.dropzone {
+  margin: 1em;
+  border: 2px dashed black;
+  text-align: center;
 }
+
+.dropzone.bg-green-200 {
+  background-color: rgb(39, 236, 39);
+}
+
+.dropzone.bg-red-300 {
+  background-color: red;
+}
+
 .widthCustom1 {
   width: 19em;
 }

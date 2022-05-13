@@ -23,7 +23,6 @@ interact(".card")
     // keep the element within the area of it's parent
     modifiers: [
       interact.modifiers.restrictRect({
-        restriction: "parent",
         endOnly: true,
       }),
     ],
@@ -135,5 +134,9 @@ window.dragMoveListener = dragMoveListener;
   height: 25em;
   box-sizing: border-box;
   touch-action: none;
+  background: blue;
+  border: 2px solid;
+  padding: 2em;
+  color: white;
 }
 </style>
