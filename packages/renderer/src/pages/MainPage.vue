@@ -57,8 +57,6 @@ async function handleSave() {
 function checkInternetBeforeLoad() {
   store.cards = [];
   if (!window.navigator.onLine) {
-    // const stringIt = JSON.stringify(quotesLocalData.results);
-    // const copyData = JSON.parse(stringIt)
     //some notification showing internet is down
     // alert("no internet connection - pulling in local data instead.");
     const results = addNeededFields(quotesLocalData.results);
